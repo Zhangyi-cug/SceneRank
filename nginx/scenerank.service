@@ -1,0 +1,21 @@
+[Unit]
+Description=SceneRank Django Backend
+After=network.target
+
+[Service]
+User=www-data
+WorkingDirectory=/var/www/scenerank/backend
+Environment="DJANGO_SETTINGS_MODULE=scenerank.settings"
+Environment="SECRET_KEY=change-me-in-production"
+Environment="DEBUG=False"
+Environment="ALLOWED_HOSTS=your-domain.com"
+Environment="ADMIN_TOKEN=change-me-in-production"
+Environment="IMAGES_DIR=/var/www/scenerank/images"
+ExecStart=/var/www/scenerank/venv/bin/gunicorn scenerank.wsgi:application \
+    --bind 127.0.0.1:8000 \
+    --workers 3 \
+    --timeout 60
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
