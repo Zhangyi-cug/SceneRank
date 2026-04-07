@@ -44,7 +44,7 @@ const DEFAULT_CONFIG = {
   comparison: {
     instruction: "请对两张图片在以下各维度分别做出选择",
     totalCount: 10,
-    imageRange: { min: 1, max: 20 },
+    imageRange: { min: 1001, max: 1020 },
     dimensions: [
       { id: "safety",     label: "🛡️ 安全 (Safety)",     question: "在这条街上走动感觉有多安全？" },
       { id: "beauty",     label: "🌸 美丽 (Beauty)",      question: "这条街看起来有多美？" },

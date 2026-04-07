@@ -5,32 +5,17 @@ import { useRouter } from 'vue-router'
 const router = useRouter()
 const password = ref('')
 const error = ref('')
-const loading = ref(false)
-const API = import.meta.env.VITE_API_URL || ''
 
-const login = async () => {
+const ADMIN_PASSWORD = 'scenerank2024'
+
+const login = () => {
   if (!password.value) return
-  loading.value = true
-  error.value = ''
-  try {
-    const res = await fetch(`${API}/api/auth/login/`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ password: password.value })
-    })
-    if (res.ok) {
-      const data = await res.json()
-      localStorage.setItem('admin_auth', 'true')
-      localStorage.setItem('admin_token', data.token)
-      router.push('/admin')
-    } else {
-      error.value = '密码错误，请重试'
-      password.value = ''
-    }
-  } catch {
-    error.value = '无法连接到服务器，请检查后端是否启动'
-  } finally {
-    loading.value = false
+  if (password.value === ADMIN_PASSWORD) {
+    localStorage.setItem('admin_auth', 'true')
+    router.push('/admin')
+  } else {
+    error.value = '密码错误，请重试'
+    password.value = ''
   }
 }
 </script>
@@ -50,9 +35,7 @@ const login = async () => {
           autofocus
         />
         <p class="error-msg" v-if="error">{{ error }}</p>
-        <button type="submit" class="login-btn" :disabled="loading">
-          {{ loading ? '登录中...' : '登录' }}
-        </button>
+        <button type="submit" class="login-btn">登录</button>
       </form>
       <a href="#/survey" class="back-link">← 返回问卷</a>
     </div>
@@ -90,8 +73,7 @@ const login = async () => {
   color: white; border: none; border-radius: 12px; font-size: 1rem; font-weight: 700;
   cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 14px rgba(79,70,229,0.35);
 }
-.login-btn:hover:not(:disabled) { opacity: 0.9; transform: translateY(-1px); }
-.login-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+.login-btn:hover { opacity: 0.9; transform: translateY(-1px); }
 .back-link { display: block; margin-top: 1.5rem; color: #9ca3af; font-size: 0.85rem; text-decoration: none; }
 .back-link:hover { color: #4f46e5; }
 </style>

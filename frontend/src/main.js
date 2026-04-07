@@ -10,7 +10,7 @@ import AdminLogin from './pages/AdminLogin.vue'
 const router = createRouter({
   history: createWebHashHistory(),
   routes: [
-    { path: '/', redirect: '/survey' },
+    { path: '/', redirect: '/admin' },
     { path: '/survey', component: SurveyPage },
     { path: '/admin/login', component: AdminLogin },
     {

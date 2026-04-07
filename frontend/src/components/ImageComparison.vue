@@ -29,7 +29,7 @@ const allDimensionsSelected = computed(() =>
   dimensions.every(d => currentSelections.value[d.id] !== null)
 )
 const progress = computed(() => (compareCount.value / totalCount) * 100)
-const getImageUrl = (id) => `/images/${id}.jpg`
+const getImageUrl = (id) => `images/${id}.jpg`
 
 const checkOrientation = () => { isPortrait.value = window.innerWidth < 768 }
 
