@@ -1,7 +1,8 @@
-import paramiko, sys
-sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+import os
+import paramiko
 
-NGINX = """server {
+NGINX = """\
+server {
     server_name wing-show.com www.wing-show.com;
     root /home/ubuntu/website;
     index index.html;
@@ -11,6 +12,9 @@ NGINX = """server {
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_read_timeout 10s;
+    }
+    location /projects/SceneRank/survey/images/ {
+        alias /home/ubuntu/website/projects/SceneRank/survey/images/;
     }
     location /projects/SceneRank/survey/assets/ {
         alias /home/ubuntu/website/projects/SceneRank/survey/assets/;
@@ -72,6 +76,9 @@ server {
         proxy_set_header X-Real-IP $remote_addr;
         proxy_read_timeout 10s;
     }
+    location /projects/SceneRank/survey/images/ {
+        alias /home/ubuntu/website/projects/SceneRank/survey/images/;
+    }
     location /projects/SceneRank/survey/assets/ {
         alias /home/ubuntu/website/projects/SceneRank/survey/assets/;
     }
@@ -112,7 +119,12 @@ server {
 
 ssh = paramiko.SSHClient()
 ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-ssh.connect('118.25.82.150', username='ubuntu', password='aP46{DwM%!,jbn')
+_host = os.environ.get("SCENERANK_SSH_HOST", "118.25.82.150")
+_user = os.environ.get("SCENERANK_SSH_USER", "ubuntu")
+_pass = os.environ.get("SCENERANK_SSH_PASS", "")
+if not _pass:
+    raise SystemExit("请设置环境变量 SCENERANK_SSH_PASS（勿提交到 Git）")
+ssh.connect(_host, username=_user, password=_pass)
 
 stdin, stdout, stderr = ssh.exec_command('sudo tee /etc/nginx/sites-enabled/website > /dev/null')
 stdin.write(NGINX)
@@ -122,7 +134,11 @@ stdout.read()
 _, o, _ = ssh.exec_command('sudo nginx -t 2>&1 && sudo systemctl reload nginx && echo reload_ok')
 print(o.read().decode())
 
-for path in ['/projects/SceneRank/', '/projects/SceneRank/survey/', '/projects/SceneRank/survey/assets/index-BdtEoj6J.css']:
+for path in [
+    '/projects/SceneRank/survey/',
+    '/projects/SceneRank/survey/images/1031.jpg',
+    '/projects/SceneRank/survey/assets/index-CEzARyHU.js',
+]:
     _, o, _ = ssh.exec_command(f'curl -s -o /dev/null -w "%{{http_code}}" http://localhost{path}')
     print(f'{path} -> {o.read().decode()}')
 

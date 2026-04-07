@@ -25,5 +25,8 @@ dist/
 .DS_Store
 Thumbs.db
 
-# 部署脚本（仅本地使用）
+# 部署脚本（仅本地使用，含服务器凭据）
 deploy.py
+deploy_backend.py
+upload_survey.py
+upload_images.py
